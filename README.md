@@ -1,70 +1,201 @@
-# Getting Started with Create React App
+# SmartScheduler
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based intelligent task scheduling application that uses a greedy algorithm to automatically schedule tasks based on deadlines, priorities, and available time slots.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### 🎯 Core Functionality
+- **Task Management**: Add tasks with name, duration, deadline, priority, and recurrence patterns
+- **Commitment Tracking**: Set fixed daily/weekly commitments and daily wake/sleep times
+- **Smart Scheduling**: Automatic task scheduling using a greedy algorithm that considers:
+  - Task priorities (High/Medium/Low)
+  - Deadlines
+  - Available time slots between wake/sleep times and fixed commitments
+  - Minimum 15-minute time blocks
 
-### `npm start`
+### 📱 User Interface
+- **Modern Design**: Clean, responsive interface with glassmorphism effects
+- **Daily Schedule View**: Visual timeline showing scheduled tasks and commitments
+- **Navigation**: Easy date navigation to view different days
+- **Real-time Updates**: Schedule automatically updates when tasks or commitments change
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 💾 Data Persistence
+- **Local Storage**: All data persists in browser local storage
+- **State Management**: Zustand for efficient state management
+- **Automatic Sync**: Changes are immediately saved and synchronized
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🎨 Visual Features
+- **Priority Color Coding**: Different colors for task priorities
+- **Time Visualization**: Clear time slots with start/end times
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Interactive Elements**: Hover effects and smooth transitions
 
-### `npm test`
+## Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **React 19** - Modern React with functional components and hooks
+- **Zustand** - Lightweight state management
+- **date-fns** - Date manipulation and formatting
+- **CSS3** - Modern styling with gradients and animations
+- **Local Storage** - Data persistence
 
-### `npm run build`
+## Getting Started
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
+- Node.js (version 14 or higher)
+- npm or yarn
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd smart-scheduler
+```
 
-### `npm run eject`
+2. Install dependencies:
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. Start the development server:
+```bash
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Usage
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Adding Tasks
+1. Fill out the task form with:
+   - **Task Name**: Descriptive name for your task
+   - **Duration**: Estimated time needed (in hours or minutes)
+   - **Deadline**: When the task must be completed
+   - **Priority**: High, Medium, or Low
+   - **Recurrence**: None, Daily, or Weekly (with specific days)
 
-## Learn More
+2. Click "Add Task" to schedule it automatically
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Setting Daily Schedule
+1. Configure your daily routine:
+   - **Wake-up Time**: When you start your day
+   - **Sleep Time**: When you end your day
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Add fixed commitments:
+   - **Name**: Description of the commitment
+   - **Start/End Time**: When it occurs
+   - **Recurrence**: Daily or Weekly (with specific days)
 
-### Code Splitting
+### Viewing Your Schedule
+- Navigate between days using the Previous/Next buttons
+- View scheduled tasks and commitments in chronological order
+- See unscheduled tasks that couldn't fit in your schedule
+- Check the summary for quick statistics
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Scheduling Algorithm
 
-### Analyzing the Bundle Size
+The application uses a greedy algorithm that:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **Sorts Tasks**: By priority (High → Medium → Low) and deadline (earliest first)
+2. **Iterates Through Days**: From today until each task's deadline
+3. **Finds Available Slots**: Between wake/sleep times and fixed commitments
+4. **Allocates Time**: In minimum 15-minute blocks until task duration is met
+5. **Handles Conflicts**: Shows unscheduled tasks when insufficient time is available
 
-### Making a Progressive Web App
+## Example Data
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Sample Tasks
+```javascript
+{
+  name: "Complete Project Report",
+  duration: 4,
+  durationUnit: "hours",
+  deadline: "2024-01-15T17:00",
+  priority: "high",
+  recurrence: "none"
+}
 
-### Advanced Configuration
+{
+  name: "Daily Exercise",
+  duration: 30,
+  durationUnit: "minutes",
+  deadline: "2024-01-31T20:00",
+  priority: "medium",
+  recurrence: "daily"
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Sample Commitments
+```javascript
+{
+  name: "Work Hours",
+  startTime: "09:00",
+  endTime: "17:00",
+  recurrence: "daily"
+}
 
-### Deployment
+{
+  name: "Team Meeting",
+  startTime: "14:00",
+  endTime: "15:00",
+  recurrence: "weekly",
+  days: ["monday", "wednesday", "friday"]
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## File Structure
 
-### `npm run build` fails to minify
+```
+src/
+├── components/
+│   ├── TaskForm.js          # Task input form
+│   ├── TaskForm.css         # Task form styling
+│   ├── CommitmentForm.js    # Commitment and daily settings form
+│   ├── CommitmentForm.css   # Commitment form styling
+│   ├── ScheduleDisplay.js   # Schedule visualization
+│   └── ScheduleDisplay.css  # Schedule styling
+├── store/
+│   └── schedulerStore.js    # Zustand state management
+├── utils/
+│   └── scheduler.js         # Scheduling algorithm
+├── App.js                   # Main application component
+├── App.css                  # Main application styling
+└── index.js                 # Application entry point
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Customization
+
+### Styling
+- Modify CSS files to change colors, fonts, and layout
+- Update gradient colors in `App.css` for different themes
+- Adjust responsive breakpoints for different screen sizes
+
+### Scheduling Logic
+- Modify `src/utils/scheduler.js` to change the algorithm
+- Adjust minimum time block size (currently 15 minutes)
+- Change priority weights or sorting logic
+
+### Features
+- Add new task properties in the store and forms
+- Implement drag-and-drop rescheduling
+- Add export functionality (iCal, CSV)
+- Integrate with external calendar APIs
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Built with React and modern web technologies
+- Inspired by productivity and time management principles
+- Uses date-fns for reliable date manipulation
+- Zustand for efficient state management

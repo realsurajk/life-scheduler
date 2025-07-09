@@ -1,0 +1,188 @@
+.commitment-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.daily-settings {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #dee2e6;
+}
+
+.daily-settings h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.daily-settings h3::before {
+  content: "⏰";
+  font-size: 1.1rem;
+}
+
+.fixed-commitments {
+  background: linear-gradient(135deg, #fff5f5, #fed7d7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #feb2b2;
+}
+
+.fixed-commitments h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fixed-commitments h3::before {
+  content: "📅";
+  font-size: 1.1rem;
+}
+
+.commitment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.commitment-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.commitment-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.commitment-form .form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.commitment-form .form-group input,
+.commitment-form .form-group select {
+  padding: 0.75rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.commitment-form .form-group input:focus,
+.commitment-form .form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.commitment-form .checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.commitment-form .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.commitment-form .checkbox-label:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.commitment-form .checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.commitment-form .submit-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+}
+
+.commitment-form .submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.commitment-form .submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .commitment-form-container {
+    gap: 1.5rem;
+  }
+  
+  .daily-settings,
+  .fixed-commitments {
+    padding: 1rem;
+  }
+  
+  .commitment-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .commitment-form .checkbox-group {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .commitment-form .submit-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .commitment-form {
+    gap: 1rem;
+  }
+  
+  .commitment-form .checkbox-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .commitment-form .form-group input,
+  .commitment-form .form-group select {
+    padding: 0.625rem;
+    font-size: 0.9rem;
+  }
+} 

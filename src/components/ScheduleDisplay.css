@@ -1,0 +1,513 @@
+.schedule-display {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.schedule-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.nav-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.nav-btn:active {
+  transform: translateY(0);
+}
+
+.current-date {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.today-badge {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.daily-schedule {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e5e9;
+}
+
+.schedule-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 330px; /* 3 items at ~80px + 2 gaps at 16px each */
+}
+
+.schedule-timeline.two-columns {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  min-height: 330px;
+}
+
+.schedule-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.empty-schedule {
+  text-align: center;
+  padding: 8rem 1rem;
+  color: #666;
+}
+
+.empty-schedule p {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.empty-schedule p:last-child {
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.schedule-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.schedule-item.commitment {
+  border-left-color: #667eea;
+  background: linear-gradient(135deg, #f8f9ff, #e8ecff);
+}
+
+.schedule-item.task {
+  border-left-color: #2ed573;
+  background: linear-gradient(135deg, #f0fff4, #dcffe4);
+}
+
+.schedule-item.task.overdue {
+  border-left-color: #ff4757;
+  background: linear-gradient(135deg, #fff5f5, #ffe8e8);
+}
+
+.schedule-item.task.due-today {
+  border-left-color: #ffa502;
+  background: linear-gradient(135deg, #fff9f0, #ffe8d1);
+}
+
+.schedule-minimum-space {
+  /* This div maintains minimum height without any visual styling */
+}
+
+.time-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  font-weight: 600;
+  color: #333;
+}
+
+.start-time {
+  font-size: 0.9rem;
+  color: #667eea;
+}
+
+.end-time {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.item-type {
+  font-size: 0.8rem;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.item-details {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.task-deadline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.deadline-label {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.deadline-time {
+  font-size: 0.8rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.duration {
+  background: #f8f9fa;
+  color: #666;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.priority-badge {
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.partial-badge {
+  background: #ffa502;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.overdue-badge {
+  background: #ff4757;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.due-today-badge {
+  background: #ffa502;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.complete-btn {
+  background: #2ed573;
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.complete-btn:hover {
+  background: #26c263;
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  background: #ff4757;
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.schedule-item:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  background: #ff3742;
+  transform: scale(1.1);
+}
+
+.unscheduled-tasks {
+  background: linear-gradient(135deg, #fff5f5, #fed7d7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #feb2b2;
+}
+
+.unscheduled-tasks h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.unscheduled-tasks h3::before {
+  content: "⚠️";
+  font-size: 1.1rem;
+}
+
+.unscheduled-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.unscheduled-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border-left: 4px solid #ff4757;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.unscheduled-content {
+  flex: 1;
+}
+
+.unscheduled-content h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.unscheduled-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.unscheduled-details span {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.unscheduled-reason {
+  font-size: 0.8rem;
+  color: #ff4757;
+  font-style: italic;
+  margin: 0;
+}
+
+.schedule-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.summary-value {
+  font-weight: 700;
+  color: #667eea;
+  font-size: 1.2rem;
+}
+
+.summary-value.warning {
+  color: #ff4757;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .schedule-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .current-date {
+    font-size: 1.2rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .nav-btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .schedule-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .time-slot {
+    flex-direction: row;
+    min-width: auto;
+    gap: 0.5rem;
+  }
+  
+  .item-details {
+    gap: 0.5rem;
+  }
+  
+  .delete-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 1;
+  }
+  
+  .schedule-summary {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .summary-item {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .schedule-timeline.two-columns {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .schedule-col {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-display {
+    gap: 1.5rem;
+  }
+  
+  .daily-schedule {
+    padding: 1rem;
+  }
+  
+  .schedule-item {
+    padding: 0.75rem;
+  }
+  
+  .item-title {
+    font-size: 1rem;
+  }
+  
+  .unscheduled-tasks {
+    padding: 1rem;
+  }
+  
+  .unscheduled-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+} 
