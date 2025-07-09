@@ -18,8 +18,29 @@ function getLocalData() {
 }
 
 function setLocalData(data) {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
+  const dataWithTimestamp = {
+    ...data,
+    lastSaved: Date.now()
+  };
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(dataWithTimestamp));
 }
+
+// Check if localStorage data is guest data (created before login)
+function isGuestData(localData) {
+  if (!localData || !localData.lastSaved) {
+    // No timestamp means it's old data (before we added timestamps)
+    return true;
+  }
+  if (!userLoginTime) {
+    // No login time means user is not logged in, so it's guest data
+    return true;
+  }
+  // If data was saved before login, it's guest data
+  return localData.lastSaved < userLoginTime;
+}
+
+// Track when user logged in to distinguish guest vs persisted data
+let userLoginTime = null;
 
 const useSchedulerStore = create(
   persist(
@@ -34,10 +55,42 @@ const useSchedulerStore = create(
       schedule: {},
       userId: null, // track current user
       offline: false, // new state
+      scheduleLoaded: false, // new flag
 
       // Actions
-      setUserId: (userId) => set({ userId }),
+      setUserId: (userId) => {
+        if (userId !== null && userLoginTime === null) {
+          // User is logging in for the first time
+          userLoginTime = Date.now();
+        } else if (userId === null) {
+          // User is logging out
+          userLoginTime = null;
+        }
+        
+        set({ userId });
+        if (userId === null) {
+          // Clear localStorage immediately
+          localStorage.removeItem(LOCAL_KEY);
+          // Reset to guest state on logout
+          set({
+            tasks: [],
+            commitments: [],
+            dailySettings: { wakeUpTime: '08:00', sleepTime: '22:00' },
+            schedule: {},
+            scheduleLoaded: false,
+          });
+          // Double-check localStorage is cleared after a short delay
+          setTimeout(() => {
+            if (localStorage.getItem(LOCAL_KEY)) {
+              localStorage.removeItem(LOCAL_KEY);
+            }
+          }, 100);
+        }
+      },
       setOffline: (offline) => set({ offline }),
+      setTasks: (tasks) => set({ tasks }),
+      setCommitments: (commitments) => set({ commitments }),
+      setDailySettings: (dailySettings) => set({ dailySettings }),
 
       addTask: (task) => {
         const newTask = {
@@ -50,6 +103,7 @@ const useSchedulerStore = create(
           tasks: [...state.tasks, newTask],
         }));
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       updateTask: (id, updates) => {
@@ -59,6 +113,7 @@ const useSchedulerStore = create(
           ),
         }));
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       deleteTask: (id) => {
@@ -66,6 +121,7 @@ const useSchedulerStore = create(
           tasks: state.tasks.filter((task) => task.id !== id),
         }));
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       completeTask: (id) => {
@@ -75,6 +131,7 @@ const useSchedulerStore = create(
           ),
         }));
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       addCommitment: (commitment) => {
@@ -87,6 +144,7 @@ const useSchedulerStore = create(
           commitments: [...state.commitments, newCommitment],
         }));
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       updateCommitment: (id, updates) => {
@@ -96,6 +154,7 @@ const useSchedulerStore = create(
           ),
         }));
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       deleteCommitment: (id) => {
@@ -103,6 +162,7 @@ const useSchedulerStore = create(
           commitments: state.commitments.filter((commitment) => commitment.id !== id),
         }));
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       updateDailySettings: (settings) => {
@@ -110,6 +170,7 @@ const useSchedulerStore = create(
           dailySettings: { ...state.dailySettings, ...settings },
         }));
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       generateSchedule: () => {
@@ -131,30 +192,49 @@ const useSchedulerStore = create(
       clearAllCommitments: () => {
         set({ commitments: [] });
         get().generateSchedule();
+        if (get().userId) get().saveUserSchedule();
       },
 
       // Load schedule from Firebase or localStorage
       loadUserSchedule: async (userId) => {
+        console.log('[loadUserSchedule] called for userId:', userId);
         let tried = false;
         const tryLoad = async () => {
           try {
             const remote = await loadSchedule(userId);
+            console.log('[loadUserSchedule] fetched from Firestore:', remote);
             set({ offline: false });
-            if (remote) {
+            let data = remote;
+            // If Firestore doc has a 'state' key, use its contents
+            if (remote && remote.state) {
+              data = remote.state;
+              console.log('[loadUserSchedule] using nested state from Firestore:', data);
+            }
+            if (data) {
               set({
-                tasks: remote.tasks || [],
-                commitments: remote.commitments || [],
-                dailySettings: remote.dailySettings || { wakeUpTime: '08:00', sleepTime: '22:00' },
+                tasks: data.tasks || [],
+                commitments: data.commitments || [],
+                dailySettings: data.dailySettings || { wakeUpTime: '08:00', sleepTime: '22:00' },
+                scheduleLoaded: true,
               });
+              console.log('[loadUserSchedule] store updated with Firestore data');
             } else {
               // migrate guest data if present
               const local = getLocalData();
+              console.log('[loadUserSchedule] no Firestore data, local data:', local);
               if (local) {
-                await saveSchedule(userId, local);
-                set(local);
+                const toSave = {
+                  tasks: local.tasks || [],
+                  commitments: local.commitments || [],
+                  dailySettings: local.dailySettings || { wakeUpTime: '08:00', sleepTime: '22:00' },
+                };
+                await saveSchedule(userId, toSave);
+                set({ ...toSave, scheduleLoaded: true });
                 localStorage.removeItem(LOCAL_KEY);
+                console.log('[loadUserSchedule] migrated local data to Firestore and store');
               } else {
-                set({ tasks: [], commitments: [], dailySettings: { wakeUpTime: '08:00', sleepTime: '22:00' } });
+                set({ tasks: [], commitments: [], dailySettings: { wakeUpTime: '08:00', sleepTime: '22:00' }, scheduleLoaded: true });
+                console.log('[loadUserSchedule] no data found, store reset');
               }
             }
             get().generateSchedule();
@@ -204,6 +284,7 @@ function useSchedulerSyncWithAuth() {
   const loadUserSchedule = useSchedulerStore((s) => s.loadUserSchedule);
 
   React.useEffect(() => {
+    console.log('[useSchedulerSyncWithAuth] effect run, user:', user);
     if (user) {
       setUserId(user.uid);
       loadUserSchedule(user.uid);
@@ -214,4 +295,4 @@ function useSchedulerSyncWithAuth() {
   }, [user]);
 }
 
-export { useSchedulerStore, useSchedulerSyncWithAuth }; 
+export { useSchedulerStore, useSchedulerSyncWithAuth, isGuestData }; 
