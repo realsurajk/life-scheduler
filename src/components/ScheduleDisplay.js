@@ -1,11 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useSchedulerStore } from '../store/schedulerStore';
 import { format, addDays, subDays, isToday } from 'date-fns';
 import './ScheduleDisplay.css';
 
+// Animated Date Component
+const AnimatedDate = ({ date, direction, isCurrentDay, entranceDirection }) => {
+  return (
+    <div 
+      className={`animated-date ${direction}`}
+      data-entrance-direction={entranceDirection}
+    >
+      <h2 className="current-date">
+        {format(date, 'EEEE, MMMM do, yyyy')}
+        {isCurrentDay && <span className="today-badge">Today</span>}
+      </h2>
+    </div>
+  );
+};
+
 const ScheduleDisplay = () => {
   const { schedule, tasks, commitments, deleteTask, deleteCommitment, completeTask, dailySettings } = useSchedulerStore();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [animationDirection, setAnimationDirection] = useState('none');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [previousDate, setPreviousDate] = useState(null);
+  const animationTimeoutRef = useRef(null);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -64,9 +83,28 @@ const ScheduleDisplay = () => {
   };
 
   const navigateDate = (direction) => {
-    setSelectedDate(prev => 
-      direction === 'next' ? addDays(prev, 1) : subDays(prev, 1)
-    );
+    // Clear any existing timeout to prevent multiple animations
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+    }
+    
+    // Use a single state update to ensure atomicity
+    const newDate = direction === 'next' ? addDays(selectedDate, 1) : subDays(selectedDate, 1);
+    
+    // Batch all state updates together
+    setAnimationDirection(direction);
+    setIsAnimating(true);
+    setPreviousDate(selectedDate);
+    setSelectedDate(newDate);
+    
+    // Reset animation state after animation completes
+    // Use a slightly longer timeout to account for browser rendering
+    animationTimeoutRef.current = setTimeout(() => {
+      setIsAnimating(false);
+      setAnimationDirection('none');
+      setPreviousDate(null);
+      animationTimeoutRef.current = null;
+    }, 350); // Slightly longer than CSS animation
   };
 
   const getDaySchedule = (date) => {
@@ -112,14 +150,38 @@ const ScheduleDisplay = () => {
     <div className="schedule-display">
       {/* Navigation */}
       <div className="schedule-navigation">
-        <button onClick={() => navigateDate('prev')} className="nav-btn">
+        <button 
+          onClick={() => navigateDate('prev')} 
+          className="nav-btn"
+        >
           ← Previous
         </button>
-        <h2 className="current-date">
-          {format(selectedDate, 'EEEE, MMMM do, yyyy')}
-          {isCurrentDay && <span className="today-badge">Today</span>}
-        </h2>
-        <button onClick={() => navigateDate('next')} className="nav-btn">
+        
+        <div className="date-container">
+          {/* Show previous date during animation */}
+          {isAnimating && previousDate && (
+            <AnimatedDate 
+              key={`prev-${format(previousDate, 'yyyy-MM-dd')}`}
+              date={previousDate} 
+              direction={animationDirection}
+              isCurrentDay={isToday(previousDate)}
+              entranceDirection={null}
+            />
+          )}
+          {/* Show current date */}
+          <AnimatedDate 
+            key={`current-${format(selectedDate, 'yyyy-MM-dd')}`}
+            date={selectedDate} 
+            direction="none"
+            isCurrentDay={isCurrentDay}
+            entranceDirection={animationDirection}
+          />
+        </div>
+        
+        <button 
+          onClick={() => navigateDate('next')} 
+          className="nav-btn"
+        >
           Next →
         </button>
       </div>

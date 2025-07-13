@@ -1,0 +1,97 @@
+.animated-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.animated-modal-backdrop.visible {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.animated-modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  min-width: 320px;
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  position: relative;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.animated-modal-content.visible {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Close button styling */
+.animated-modal-content button[aria-label="Close"] {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.animated-modal-content button[aria-label="Close"]:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .animated-modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+    min-width: auto;
+    width: calc(100vw - 2rem);
+  }
+}
+
+/* Focus management for accessibility */
+.animated-modal-content:focus {
+  outline: none;
+}
+
+/* Animation keyframes for additional effects */
+@keyframes modalShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.animated-modal-content.shake {
+  animation: modalShake 0.3s ease-in-out;
+} 

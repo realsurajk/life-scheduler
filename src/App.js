@@ -69,6 +69,13 @@ function AppContent() {
   // Also capture guest data when user logs out (returns to guest mode)
   React.useEffect(() => {
     if (!user) {
+      // Reset modal states when user logs out
+      setAuthModalOpen(false);
+      setMergeModalOpen(false);
+      setAuthMode('login');
+      setMergeChoice(null);
+      setPendingGuestData(null);
+      
       const local = getLocalData();
       console.log('[GuestCapture] User logged out, checking for guest data:', local);
       if (local && local.state && (local.state.tasks?.length || local.state.commitments?.length)) {
@@ -95,6 +102,7 @@ function AppContent() {
 
   // Handle login button click
   const handleLoginClick = () => {
+    setAuthMode('login'); // Ensure we're in login mode when login button is clicked
     if (checkGuestDataBeforeLogin()) {
       // Show merge modal before login
       setMergeModalOpen(true);
@@ -306,7 +314,11 @@ function AppContent() {
           )}
         </div>
       </header>
-      <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)}>
+      <AuthModal 
+        open={authModalOpen} 
+        onClose={() => setAuthModalOpen(false)}
+        onAnimationComplete={() => setAuthMode('login')}
+      >
         <Login mode={authMode} onSuccess={() => setAuthModalOpen(false)} />
       </AuthModal>
       <AuthMergeModal

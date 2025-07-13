@@ -4,7 +4,7 @@ import { auth } from "../firebase";
 const db = getFirestore();
 
 export async function loadSchedule(userId) {
-  const ref = doc(db, "schedules", userId);
+  const ref = doc(db, "users", userId);
   const snap = await getDoc(ref);
   if (snap.exists()) {
     return snap.data();
@@ -14,6 +14,6 @@ export async function loadSchedule(userId) {
 }
 
 export async function saveSchedule(userId, data) {
-  const ref = doc(db, "schedules", userId);
+  const ref = doc(db, "users", userId);
   await setDoc(ref, data, { merge: true });
 } 
